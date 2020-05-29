@@ -18,7 +18,7 @@ def round_down(n, decimals=0):
     multiplier = 10 ** decimals
     return math.floor(n * multiplier) / multiplier
 
-#reads in dataset; path may differ on your own machine
+# reads in dataset; path may differ on your own machine
 trainingset = pandas.read_pickle('trainingset_100_images_each_class.pkl') 
 
 classes = []

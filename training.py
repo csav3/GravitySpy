@@ -11,10 +11,8 @@ import random
 import numpy as np
 import os
 import pandas
-os.chdir('/Users/carlynsavino/Desktop/training2')
 
-
-trainingset = pandas.read_pickle('trainingset_100_images_each_class.pkl') 
+# trainingset = pandas.read_pickle('trainingset_100_images_each_class.pkl') 
 
 
 classes = []

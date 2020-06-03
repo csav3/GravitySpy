@@ -19,7 +19,7 @@ def round_down(n, decimals=0):
     return math.floor(n * multiplier) / multiplier
 
 # reads in dataset; path may differ on your own machine
-trainingset = pandas.read_pickle('GravitySpyData/pickeleddata/trainingset_100_images_each_class.pkl') 
+trainingset = pandas.read_pickle('../GravitySpyData/pickeleddata/trainingset_100_images_each_class.pkl') 
 
 classes = []
 

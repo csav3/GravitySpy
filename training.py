@@ -6,6 +6,8 @@ from keras.layers import Dense, Dropout, Activation, Flatten
 from keras.layers import MaxPooling2D, Conv2D
 from itertools import combinations
 from itertools import permutations
+from sklearn.model_selection import GridSearchCV
+from keras.wrappers.scikit_learn import KerasClassifier
 import random
 import math
 

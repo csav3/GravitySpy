@@ -75,45 +75,59 @@ for i in range(1, 4):
         tset_labels_array = np.asarray(tset_labels)
 
         classes_used = np.array(classes_used)
+        
+        def create_model(optimizer = 'adadelta'):
+            model = Sequential()
 
-        model = Sequential()
+            model.add(Conv2D(16, (3,3), input_shape= tset_data_array.shape[1:4])) 
+            model.add(Activation('relu'))
+            model.add(MaxPooling2D(pool_size=(2,2)))
+            model.add(Dropout(0.5))
 
-        model.add(Conv2D(16, (3,3), input_shape= tset_data_array.shape[1:4])) 
-        model.add(Activation('relu'))
-        model.add(MaxPooling2D(pool_size=(2,2)))
-        model.add(Dropout(0.5))
+            model.add(Conv2D(32, (3,3)))
+            model.add(Activation('relu'))
+            model.add(MaxPooling2D(pool_size=(2,2)))
+            model.add(Dropout(0.5))
 
-        model.add(Conv2D(32, (3,3)))
-        model.add(Activation('relu'))
-        model.add(MaxPooling2D(pool_size=(2,2)))
-        model.add(Dropout(0.5))
+            model.add(Conv2D(64, (3,3)))
+            model.add(Activation('relu'))
+            model.add(MaxPooling2D(pool_size=(2,2)))
+            model.add(Dropout(0.5))
 
-        model.add(Conv2D(64, (3,3)))
-        model.add(Activation('relu'))
-        model.add(MaxPooling2D(pool_size=(2,2)))
-        model.add(Dropout(0.5))
+            model.add(Conv2D(64, (3,3)))
+            model.add(Activation('relu'))
+            model.add(MaxPooling2D(pool_size=(2,2)))
+            model.add(Dropout(0.5))
 
-        model.add(Conv2D(64, (3,3)))
-        model.add(Activation('relu'))
-        model.add(MaxPooling2D(pool_size=(2,2)))
-        model.add(Dropout(0.5))
-
-        model.add(Flatten())
-        model.add(Dense(256))
-        model.add(Dense(4, activation = 'softmax'))
+            model.add(Flatten())
+            model.add(Dense(256))
+            model.add(Dense(4, activation = 'softmax'))
 
         
-        model.summary()
+            # model.summary()
 
-        model.compile(loss = 'sparse_categorical_crossentropy',
-                    optimizer='adadelta',
-                    metrics=['accuracy'])
-     
+            model.compile(loss = 'sparse_categorical_crossentropy',
+                        optimizer= optimizer,
+                        metrics=['accuracy'])
+            return model
+        
+        neural_net = KerasClassifier(build_fn = create_model, verbose = 0)
+        # different batch size and epoch values to try
+        batch_size = [10, 20, 30]
+        epochs = [5, 10, 15]
+        param_grid = dict(batch_size = batch_size, epochs = epochs)
+        grid = GridSearchCV(estimator = neural_net, param_grid = param_grid, n_jobs = 1, cv = 3)
+        grid_result = grid.fit(tset_data_array, tset_labels_array)
+        tuning = open("tune.txt", "a")
+        tuning.write("Axis: %f, Classes used: %s, Best Accuracy: %f using %s\n" % (i, str(classes_used), grid_result.best_score_, grid_result.best_params_))
+        tuning.close()
 
+       # commented out the below section for now while we experiment with tuning and the KerasClassifier method of creating/fitting the network
+       '''
         # portion of data used for validation
         val_amount = 0.15
 
-        # fit using the training data and training labels
+        # fit using the training data and training labels. can change number of epochs according to grid search
         fit = model.fit(tset_data_array, tset_labels_array, validation_split = val_amount, epochs = 1)
 
         # obtain number of samples
@@ -135,3 +149,4 @@ for i in range(1, 4):
 
 # save results to csv file
 results.to_csv('metrics.csv', mode = 'a', header = True)
+'''
